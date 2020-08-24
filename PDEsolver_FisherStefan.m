@@ -102,11 +102,14 @@ for j = 1:ts
 
         % J(u) delta u = -F(u)
         for i = 2:nodes_xi-1
-           coeffA_u(1,i) = 1.0/(dxi^2*st^2) - (i-1)*dxi/st * (st-st_p)/(2*dt*dxi);
+           coeffA_u(1,i) = 1.0/(dxi^2*st^2) - (i-1)*dxi/st ...
+               * (st-st_p)/(2*dt*dxi);
            coeffB_u(1,i) = - 2.0/(dxi^2*st^2)  - 1.0/dt + (1 - 2.0*u(1,i));
-           coeffC_u(1,i) = 1.0/(dxi^2*st^2) + (i-1)*dxi/st * (st-st_p)/(2*dt*dxi);
+           coeffC_u(1,i) = 1.0/(dxi^2*st^2) + (i-1)*dxi/st ...
+               * (st-st_p)/(2*dt*dxi);
            Fu(1,i) = -(u(1,i+1) - 2*u(1,i) + u(1,i-1))/(dxi^2*st^2) ...
-               - (i-1)*dxi/st * (u(1,i+1) - u(1,i-1)) * (st-st_p)/(2*dt*dxi) ...
+               - (i-1)*dxi/st * (u(1,i+1) - u(1,i-1)) ...
+               * (st-st_p)/(2*dt*dxi) ...
                + (u(1,i)-u_p(1,i)) / dt - u(1,i)*(1-u(1,i));
         end 
         delta_u = tridia(coeffA_u, coeffB_u, coeffC_u, Fu, nodes_xi);
@@ -124,7 +127,8 @@ for j = 1:ts
         
         % Stefan condition from Equation (6)
         % Supplementary Material Eq (S16)
-        st = st_p + dt*(-kappa*(u(1,nodes_xi-2)/2-2*u(1,nodes_xi-1))/(dxi*st));
+        st = st_p + dt*(-kappa*(u(1,nodes_xi-2)/2-2*u(1,nodes_xi-1))...
+            /(dxi*st));
     end
       
     % Displaying density profiles solutions at required times
@@ -137,7 +141,8 @@ for j = 1:ts
             colorNo = 2;
         end
         plot(xi(1:nodes_xi)*st, u, ...
-            'LineWidth',2, 'DisplayName', textc, 'color', colors(colorNo,1:3));
+            'LineWidth',2, 'DisplayName', textc, 'color',...
+            colors(colorNo,1:3));
     end
 
     % Updating current s(t)
@@ -157,6 +162,13 @@ for i = 1:nodes_xi
     end
 end
 %%
+% Displaying the exact solution shifted such as U(z) = 0.5 at z=0
+g2 = 0;
+g3 = -14.56;
+k = -3.3916324186463555218;
+z = -30:0.01:0.5;
+U = exp(2*z/sqrt(6)).*WeierstrassP(exp(z/sqrt(6))-k, g2, g3); 
+plot(z+xhalf*st,U,':','LineWidth',2,'Color', colors(4,1:3));
 
 % Setting the limit of the current axis
 xlim([60 100])

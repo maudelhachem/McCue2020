@@ -70,6 +70,7 @@ set(groot, 'defaultAxesTickLabelInterpreter','latex');
 set(groot, 'defaultLegendInterpreter','latex');
 set(gca,'fontsize', 18);
 %% Newton-Raphson algorithm - main loop
+% A variable to calculate the position where U = 0.5
 xhalf = 0;
 % For all time steps
 for j = 1:ts
@@ -128,7 +129,8 @@ for j = 1:ts
             colorNo = 2;
         end
         plot(x(1:nodes), u, '-', ...
-            'LineWidth',2, 'DisplayName', textc, 'color', colors(colorNo,1:3));
+            'LineWidth',2, 'DisplayName', textc, 'color', ...
+            colors(colorNo,1:3));
     end
     
     % Calculating the wave speed as described in the Supplementary Material
@@ -146,6 +148,10 @@ for j = 1:ts
 end
 
 %%
+% Displaying the exact solution shifted such as U(z) = 0.5 at z=0
+xexact=-40:dx:40;
+solutionExact = 1./(1+(sqrt(2)-1)*exp(xexact/sqrt(6))).^2;
+plot(xexact+xhalf,solutionExact,':','LineWidth',2,'Color', colors(4,1:3));
 
 % Setting the limit of the current axis
 xlim ([0 40])
